@@ -1,0 +1,9 @@
+<?php
+// === 由安装器自动写入，请勿手动编辑（本文件为开源分发用的示例模板）===
+// 真实部署：删除本示例，访问 /install 向导会自动生成 config_db.php；
+// 或复制本文件为 config_db.php 并填入你的真实值。
+define('DB_HOST', '127.0.0.1');
+define('DB_NAME', 'your_db_name');
+define('DB_USER', 'your_db_user');
+define('DB_PASS', 'your_db_password');
+define('SITE_URL', 'https://your-domain.example');

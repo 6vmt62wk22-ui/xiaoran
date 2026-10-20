@@ -1,0 +1,34 @@
+# ===== 小染云盘 / php-disk 开源版 .gitignore =====
+
+# 安装器自动生成的本地数据库配置（含凭据，切勿入库）
+config_db.php
+
+# 环境变量 / 密钥（生产凭据放这里，勿提交）
+.env
+.xiaoran_ops.env
+*.env.local
+
+# 运行时产物
+/uploads/
+/runtime/
+/cache/
+/tmp/
+/logs/
+*.log
+
+# 依赖 / 构建产物
+/vendor/
+/node_modules/
+composer.lock
+package-lock.json
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# 会话 / 缓存数据
+*.sess
+/sessions/

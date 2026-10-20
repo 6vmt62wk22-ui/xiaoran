@@ -1,0 +1,21 @@
+# Apache 重写：干净短链（无 .php 后缀）
+# 子目录部署（如 /php-disk）同样适用，规则相对当前目录生效
+RewriteEngine On
+
+# 下载短链：/s/xxxx -> api/download.php?code=xxxx
+RewriteRule ^s/([a-zA-Z0-9]+)$ api/download.php?code=$1 [L]
+
+# 入口页（根）
+RewriteRule ^(dashboard|login|register|settings|logout|install)$ $1.php [L]
+
+# 管理后台（admin/）
+RewriteRule ^(dashboardadmin|dashboardadminusers|dashboardadminfiles|dashboardadminquotas|dashboardadminsystem|dashboardadminsettings|dashboardadminpricing|admin_overview|admin_users|admin_files|admin_quotas|admin_system|admin_settings|admin_pricing)$ admin/$1.php [L]
+
+# 接口（api/）
+RewriteRule ^(pre_upload|upload|delete|send_code|pay_create|pay_query|pay_notify|captcha)$ api/$1.php [L]
+
+# 法律/静态页（pages/）
+RewriteRule ^(privacy|terms|help|contact)$ pages/$1.php [L]
+
+# 禁止 uploads 目录执行 PHP（防 webshell）
+RewriteRule ^uploads/.*\.(php|phtml|php3|php4|php5|phar)$ - [F,L]

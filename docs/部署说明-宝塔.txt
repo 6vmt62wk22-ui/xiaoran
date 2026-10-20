@@ -1,0 +1,60 @@
+TangWo 网盘 · 本地测试（宝塔）部署步骤
+=====================================
+代码位置：C:\Users\Administrator\Desktop\网盘\tangwo-disk
+（宝塔建站时把「根目录」指到这里即可，不用塞进 wwwroot）
+
+【前置】你已有宝塔面板，但运行环境还没装，按顺序来：
+
+一、宝塔装运行环境（面板 GUI）
+1. 软件商店 → 搜索安装「PHP-8.3」（pdo_mysql 扩展默认已带，无需额外开）。
+2. 软件商店 → 安装「MySQL 5.7」或「MySQL 8.0」（本地测试任选其一）。
+   装完在「数据库」面板能看到 root 密码，记一下。
+
+二、建站点（根目录指向本项目）
+3. 网站 → 添加站点：
+   - 域名：phpdisk.test（本机测试可在 hosts 加一行  127.0.0.1 phpdisk.test；
+     也可直接用 IP:端口，如 192.168.1.12:8080）
+   - PHP 版本：选 PHP-8.3
+   - 根目录：手动改成  C:\Users\Administrator\Desktop\网盘\tangwo-disk
+   （宝塔会往里塞默认首页，删掉不影响本项目）
+4. 伪静态（可选，用于干净短链 /dashboard /login /s/xxxx）：
+   站点 → 伪静态，粘贴文末片段。宝塔已自带 PHP 解析，不要包含 fastcgi_pass 那段。
+
+三、建数据库
+5. 数据库 → 添加数据库：库名 php_disk，用户名 php_disk（或 root），设密码。
+   本项目 config.php 默认 DB_USER=root / DB_NAME=php_disk，
+   把该密码填进 config.php 的 DB_PASS 即可。
+
+四、改配置（本项目已预填，只改两项）
+6. 打开  C:\Users\Administrator\Desktop\网盘\tangwo-disk\config.php ：
+   - DB_PASS  改成宝塔数据库密码（搜索 BT_MYSQL_PASSWORD 那行）
+   - SITE_URL 改成 http://phpdisk.test（与站点域名一致，结尾不带斜杠）
+   （TICKET_SECRET 已固定占位，上线再改；storage 默认 local 不用动）
+
+五、安装 + 访问
+7. 浏览器打开  http://phpdisk.test/install.php
+   → 看到「安装完成 ✅ schema 版本：1002」说明建库建表成功。
+8. 打开  http://phpdisk.test/  → 首页（hero + 上传卡片）。
+9. 点「注册」建第一个账号（自动成为管理员 id=1）→ 进 /dashboard 上传文件。
+10. 装完删除  install.php  /  update.php  （防被重复触发）。
+
+【排错】
+- 首页白屏 / 报 DB 错误：多半 DB_PASS 或 SITE_URL 没改对，或 MySQL 没启动。
+- uploads 不可写：文件管理器右键  tangwo-disk/uploads  给 755/777。
+- 干净短链 404：伪静态没贴，或贴了含 fastcgi_pass 的完整 server 片段
+  （应只贴下面的 rewrite 部分）。
+
+【伪静态片段】（nginx，仅 rewrite，不含 PHP 解析）
+------------------------------------------------------------
+location /s/ {
+    rewrite ^/s/([a-zA-Z0-9]+)$ /download.php?code=$1 last;
+}
+location ~ ^/(dashboard|dashboardadmin|upgrade|login|register|settings|pre_upload|upload|delete|logout|install|update)$ {
+    rewrite ^/(.+)$ /$1.php last;
+}
+（如果之前部署时已加过伪静态但漏了 dashboardadmin，把这行替换原 dashboard 那行即可）
+location ~* ^/uploads/.*\.(php|phtml|php3|php4|php5|phar)$ {
+    deny all;
+}
+------------------------------------------------------------
+（Apache 用户无需上面的片段，项目自带 .htaccess 已搞定，开启 mod_rewrite 即可）
