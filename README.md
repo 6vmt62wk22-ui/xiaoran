@@ -4,6 +4,8 @@
 > 这是把以往散落的网盘项目（wangpanphp、TangWo图床、Cloudreve 规划）收敛后的**统一底座**：
 > 存储、上传内核、路由、鉴权、UI 全部共用一套，网盘与图床都长在同一内核上，从此不再"每次新写"。
 
+**仓库 / Repo：** <https://github.com/6vmt62wk22-ui/tangwo-disk> · **克隆：** `git clone git@github.com:6vmt62wk22-ui/tangwo-disk.git`
+
 纯 PHP 8.3 + MySQL + 原生前端，贴合 LNMP / 宝塔环境，零框架依赖。
 
 ## 功能
